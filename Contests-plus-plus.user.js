@@ -2,9 +2,9 @@
 // @name         Contests++
 // @namespace    http://tampermonkey.net/
 // @version      1.0.0
-// @description  Better contests layout with more information displayed
+// @description  Better contests with more information displayed, features, and tighter layout
 // @author       infarctus
-// @license      ALL RIGHTS RESERVED
+// @license      GPL-3.0
 // @match        https://nutaku.haremheroes.com/activities.html*
 // @match        https://*.hentaiheroes.com/activities.html*
 // @match        https://*.gayharem.com/activities.html*
