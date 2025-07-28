@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Contests++
 // @namespace    http://tampermonkey.net/
-// @version      1.0.0
+// @version      1.0.1
 // @description  Better contests with more information displayed, features, and tighter layout
 // @author       infarctus
 // @license      GPL-3.0
@@ -15,6 +15,8 @@
 // @match        https://*.gaypornstarharem.com/activities.html*
 // @match        https://*.mangarpg.com/activities.html*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=haremheroes.com
+// @updateURL    https://github.com/infarcactus-HH/Contests-plus-plus/raw/refs/heads/main/Contests-plus-plus.user.js
+// @downloadURL  https://github.com/infarcactus-HH/Contests-plus-plus/raw/refs/heads/main/Contests-plus-plus.user.js
 // @grant        GM_addStyle
 // @grant        GM_setValue
 // @grant        GM_getValue
@@ -450,8 +452,11 @@
             if(tiebreakeractivated && IDdiff != 0) { // IDdiff==0 if it's the player itself
                 const $playernameflag = $(this).find("td").eq(1);
 
-                let playernameflaghtml = $playernameflag.html().trimRight(); // trims the right of the name
-                playernameflaghtml += `<sup style="vertical-align: super; text-align: left;"`;
+                const $flag = $playernameflag.contents().filter("span") // trims the right of the name
+                const playerName = $playernameflag.contents()[2].textContent.trim()
+                let newPlayerNameFlagHtml = $flag.prop('outerHTML'); // readds the flag
+                newPlayerNameFlagHtml += `<span ${playerName.length >= 20 ? `tooltip="${playerName}"` : ""} class="CPPplayername">${playerName}</span>`;
+                newPlayerNameFlagHtml += `<sup style="vertical-align: super; text-align: left;"`;
 
 
                 // Determine the actual advantage/disadvantage for tooltip (unchanged)
@@ -468,10 +473,10 @@
                     displaySymbol = hasAdvantage ? " +" : " -";
                 }
 
-                playernameflaghtml += ` tooltip='${tooltipText}'>${displaySymbol}`;
-                playernameflaghtml += "</sup>";
+                newPlayerNameFlagHtml += ` tooltip='${tooltipText}'>${displaySymbol}`;
+                newPlayerNameFlagHtml += "</sup>";
 
-                $playernameflag.html(playernameflaghtml);
+                $playernameflag.html(newPlayerNameFlagHtml);
             }
 
             // Store both player ID and points in an object
@@ -892,6 +897,14 @@ margin-top: 3rem!important;
 #contests > div.contests-container > div.right_part > .ranking table tbody.leadTable.custombettercontests tr.lead_table_default td:nth-child(4) {
     border-color: #347098;
 }
+
+.CPPplayername{
+    display: inline-block; /* Key change to apply max-width */
+    max-width: 145px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 `;
     function injectContestsPlusPlusColor() {
         if(positiveNegativeStyle){positiveNegativeStyle.remove();positiveNegativeStyle=null} // remove old style if exists
@@ -1163,7 +1176,6 @@ margin-top: 3rem!important;
         run1TimeAtScriptStart();
         if (location.search.includes("?tab=contests")) {
             run1TimeInContestTab();
-
         }
         else{
             const contestswitcher = $("[data-tab='contests']");
