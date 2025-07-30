@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Contests++
 // @namespace    http://tampermonkey.net/
-// @version      1.0.1
+// @version      1.0.2
 // @description  Better contests with more information displayed, features, and tighter layout
 // @author       infarctus
 // @license      GPL-3.0
@@ -1175,7 +1175,21 @@ margin-top: 3rem!important;
     function setup() {
         run1TimeAtScriptStart();
         if (location.search.includes("?tab=contests")) {
+            if(isSelectedContest()){
             run1TimeInContestTab();
+            }
+            else{
+                const observer = new MutationObserver(() => {
+                    if (isSelectedContest()) {
+                        observer.disconnect();
+                        run1TimeInContestTab();
+                    }
+                });
+                 observer.observe(document,{
+                    childList: true,
+                    subtree: true,
+                 })
+            }
         }
         else{
             const contestswitcher = $("[data-tab='contests']");
