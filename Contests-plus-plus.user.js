@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Contests++
 // @namespace    http://tampermonkey.net/
-// @version      1.0.3
+// @version      1.0.4
 // @description  Better contests with more information displayed, features, and tighter layout
 // @author       infarctus
 // @license      GPL-3.0
@@ -422,9 +422,8 @@
             .children()
             .filter(".cont_points_number")
             .text()
-            .replaceAll(",", ""),
-            10
-        );
+            .replace(/\D/g, '')
+        ,10);
         const currplayerid = parseInt($currplayer.attr("sorting_id"), 10);
 
         let playersinformation = [];
@@ -535,20 +534,18 @@
         if (!str) return 0;
 
         // Normalize the string: remove commas, trim whitespace, and convert to lowercase
-        const cleanStr = str.replaceAll(/,/g, "").trim().toLowerCase();
+        const cleanStr = str.replace(/,/g, "").trim().toLowerCase();
+        const nb = str.replace(/\D/g, '')
 
         // Check if the string ends with 'k'
         if (cleanStr.endsWith("k")) {
-            // Extract the number part (remove 'k')
-            const numberPart = cleanStr.slice(0, -1);
-
             // Convert to float and multiply by 1000
-            const numberValue = parseFloat(numberPart) || 0;
+            const numberValue = parseFloat(nb) || 0;
             return Math.round(numberValue * 1000);
         }
 
         // Handle regular numbers
-        return parseInt(cleanStr, 10) || 0;
+        return parseInt(nb, 10) || 0;
     }
     function formatNumberWithCommas(number) {
         return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
