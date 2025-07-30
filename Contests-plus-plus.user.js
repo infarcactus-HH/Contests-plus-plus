@@ -434,14 +434,13 @@
 
         $contestpeople.each(function (index, element) {
             // Extract points from DOM element
-            const points = parseInt(
+            const points = parseInt( // TODO: use contest var for this
                 $(this)
                 .children()
                 .filter(".cont_points_number")
                 .text()
-                .replaceAll(",", ""),
-                10
-            );
+                .replace(/\D/g, '')
+            ,10);
 
             // Add points display to table
             $(this).find("td").eq(1).after(handleShowingPoint(points, currpoints));
@@ -1172,48 +1171,48 @@ margin-top: 3rem!important;
 
         $('#contains_all').append($overlay);
     }
-    function setup() {
-        run1TimeAtScriptStart();
-        if (location.search.includes("?tab=contests")) {
-            if(isSelectedContest()){
+function setup() {
+    run1TimeAtScriptStart();
+    if (location.search.includes("?tab=contests")) {
+        if(isSelectedContest()){
             run1TimeInContestTab();
-            }
-            else{
-                const observer = new MutationObserver(() => {
-                    if (isSelectedContest()) {
-                        observer.disconnect();
-                        run1TimeInContestTab();
-                    }
-                });
-                 observer.observe(document,{
-                    childList: true,
-                    subtree: true,
-                 })
-            }
         }
         else{
-            const contestswitcher = $("[data-tab='contests']");
-            contestswitcher.on("click.switchtabcontest", () => {
-                // hooks the contests tab
-                const observer = new MutationObserver(() => {
-                    if (isSelectedContest()) {
-                        observer.disconnect();
-                        run1TimeInContestTab();
-                        changeSwitchTabScroll();
-                    }
-                });
-                observer.observe(document.querySelector("#contests"), {
-                    childList: true,
-                    subtree: true,
-                });
+            const observer = new MutationObserver(() => {
+                if (isSelectedContest()) {
+                    observer.disconnect();
+                    run1TimeInContestTab();
+                }
+            });
+            observer.observe(document,{
+                childList: true,
+                subtree: true,
+            })
+        }
+    }
+    else{
+        const contestswitcher = $("[data-tab='contests']");
+        contestswitcher.on("click.switchtabcontest", () => {
+            // hooks the contests tab
+            const observer = new MutationObserver(() => {
                 if (isSelectedContest()) {
                     observer.disconnect();
                     run1TimeInContestTab();
                     changeSwitchTabScroll();
                 }
             });
-        }
+            observer.observe(document.querySelector("#contests"), {
+                childList: true,
+                subtree: true,
+            });
+            if (isSelectedContest()) {
+                observer.disconnect();
+                run1TimeInContestTab();
+                changeSwitchTabScroll();
+            }
+        });
     }
+}
 
-    setup();
+setup();
 })();
