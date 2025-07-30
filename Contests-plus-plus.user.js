@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Contests++
 // @namespace    http://tampermonkey.net/
-// @version      1.0.2
+// @version      1.0.3
 // @description  Better contests with more information displayed, features, and tighter layout
 // @author       infarctus
 // @license      GPL-3.0
